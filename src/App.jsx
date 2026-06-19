@@ -1660,15 +1660,17 @@ export default function App() {
     if (!validateForm()) return;
 
     const apiKey = import.meta.env.VITE_GROQ_API_KEY;
-    if (!apiKey) {
+    const keyIsValid = apiKey && apiKey.trim() !== "" && apiKey !== "undefined" && apiKey.startsWith("gsk_");
+
+    if (!keyIsValid) {
       setDietPlan(
-        "⚠️ Missing API Key\n\nVITE_GROQ_API_KEY is not configured on the server.\n\nIf deployed on Vercel:\n1. Project → Settings → Environment Variables\n2. Add VITE_GROQ_API_KEY = your Groq API key\n3. Redeploy"
+        "⚠️ Missing or invalid API Key\n\nVITE_GROQ_API_KEY is not configured.\n\nIf deployed on Vercel:\n1. Project → Settings → Environment Variables\n2. Add VITE_GROQ_API_KEY = your Groq API key (starts with gsk_)\n3. Redeploy — Vite bakes env vars at build time, so a redeploy is required after adding the key."
       );
       setView("results");
       return;
     }
 
-    const groq = new Groq({ apiKey, dangerouslyAllowBrowser: true });
+    const groq = new Groq({ apiKey: apiKey.trim(), dangerouslyAllowBrowser: true });
 
     setLoading(true);
     setDietPlan("");
