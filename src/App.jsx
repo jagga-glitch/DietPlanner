@@ -1032,18 +1032,21 @@ function useScrollReveal() {
 }
 
 // ─── Header ──────────────────────────────────────────────────────────────────
-function Header({ onSignOut }) {
+function Header({ onSignOut, onNavigate }) {
   return (
     <header className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10 shadow-sm">
       <div className="flex justify-between items-center px-5 md:px-16 py-4 w-full">
-        <div className="text-[32px] font-extrabold leading-10 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+        <button
+          onClick={() => onNavigate("dashboard")}
+          className="text-[32px] font-extrabold leading-10 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary"
+        >
           NutriAI
-        </div>
+        </button>
         <nav className="hidden md:flex space-x-8">
-          <a className="text-primary font-bold transition-colors" href="#">Home</a>
-          <a className="text-on-surface-variant hover:text-primary transition-colors" href="#intake">Planner</a>
-          <a className="text-on-surface-variant hover:text-primary transition-colors" href="#results">Dashboard</a>
-          <a className="text-on-surface-variant hover:text-primary transition-colors" href="#">Community</a>
+          <button onClick={() => onNavigate("dashboard")} className="text-on-surface-variant hover:text-primary transition-colors font-medium">Home</button>
+          <button onClick={() => onNavigate("app")}       className="text-on-surface-variant hover:text-primary transition-colors font-medium">Planner</button>
+          <button onClick={() => onNavigate("dashboard")} className="text-primary font-bold transition-colors">Dashboard</button>
+          <button onClick={() => onNavigate("goals")}     className="text-on-surface-variant hover:text-primary transition-colors font-medium">Goals</button>
         </nav>
         <div className="flex items-center gap-4">
           <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">notifications</span>
@@ -1053,7 +1056,7 @@ function Header({ onSignOut }) {
             title="Sign Out"
           >
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>account_circle</span>
-            <span className="hidden md:inline text-xs font-semibold tracking-wider uppercase text-on-surface-variant hover:text-primary transition-colors">Sign Out</span>
+            <span className="hidden md:inline text-xs font-semibold tracking-wider uppercase">Sign Out</span>
           </button>
         </div>
       </div>
@@ -1630,17 +1633,20 @@ export default function App() {
   function validateForm() {
     const newErrors = {};
     const ageRegex = /^(?:[1-9][0-9]?|1[01][0-9]|120)$/;
+    const ageStr = String(age).trim();
+    const weightNum = Number(weight);
+    const heightNum = Number(height);
 
-    if (!age.trim()) newErrors.age = "Age is required";
-    else if (!ageRegex.test(age)) newErrors.age = "Age must be between 1 and 120";
+    if (!ageStr) newErrors.age = "Age is required";
+    else if (!ageRegex.test(ageStr)) newErrors.age = "Age must be between 1 and 120";
 
     if (!gender) newErrors.gender = "Please select gender";
 
-    if (!weight.trim()) newErrors.weight = "Weight is required";
-    else if (weight < 20 || weight > 300) newErrors.weight = "Weight must be between 20 and 300 kg";
+    if (!String(weight).trim()) newErrors.weight = "Weight is required";
+    else if (weightNum < 20 || weightNum > 300) newErrors.weight = "Weight must be between 20 and 300 kg";
 
-    if (!height.trim()) newErrors.height = "Height is required";
-    else if (height < 50 || height > 250) newErrors.height = "Height must be between 50 and 250 cm";
+    if (!String(height).trim()) newErrors.height = "Height is required";
+    else if (heightNum < 50 || heightNum > 250) newErrors.height = "Height must be between 50 and 250 cm";
 
     if (!goal) newErrors.goal = "Please select your goal";
     if (!dietPreference) newErrors.dietPreference = "Please select dietary preference";
@@ -1656,7 +1662,7 @@ export default function App() {
     const apiKey = import.meta.env.VITE_GROQ_API_KEY;
     if (!apiKey) {
       setDietPlan(
-        "⚠️ Missing API Key\n\nVITE_GROQ_API_KEY is not set.\n\nIf deployed on Vercel:\n1. Project → Settings → Environment Variables\n2. Add VITE_GROQ_API_KEY = your Groq key\n3. Redeploy"
+        "⚠️ Missing API Key\n\nVITE_GROQ_API_KEY is not configured on the server.\n\nIf deployed on Vercel:\n1. Project → Settings → Environment Variables\n2. Add VITE_GROQ_API_KEY = your Groq API key\n3. Redeploy"
       );
       setView("results");
       return;
@@ -1716,7 +1722,7 @@ Activity Level: Moderately Active
     } catch (error) {
       console.error("Groq error:", error);
       setDietPlan(
-        `❌ Generation failed.\n\nError: ${error?.message || String(error)}\n\nCheck that VITE_GROQ_API_KEY is valid and the Groq API is reachable.`
+        `❌ Generation failed.\n\nError: ${error?.message || String(error)}\n\nEnsure VITE_GROQ_API_KEY is valid and the Groq API is reachable.`
       );
     }
 
@@ -1737,7 +1743,7 @@ Activity Level: Moderately Active
   return (
     <div className="min-h-screen bg-background text-on-background">
       <ShaderBackground />
-      <Header onSignOut={handleSignOut} />
+      <Header onSignOut={handleSignOut} onNavigate={setPage} />
 
       <main className="relative pt-24 pb-32">
         <HeroSection />
