@@ -334,3 +334,36 @@ body:has(.login-page-root) {
 .onboarding-slider {
   accent-color: #4edea3;
 }
+
+/* ── Goals Page (Step 2) ───────────────────────────────────────────────────── */
+
+/* Base card — matches glass-card from onboarding */
+.goals-card {
+  background: rgba(26, 33, 29, 0.4);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.goals-card:hover {
+  border-color: #4edea3;
+  background: rgba(78, 222, 163, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Selected state */
+.goals-card-selected {
+  border-color: #4edea3 !important;
+  background: rgba(78, 222, 163, 0.1) !important;
+  box-shadow: 0 0 20px rgba(78, 222, 163, 0.15);
+}
+
+/* Click feedback */
+.goals-card:active {
+  transform: scale(0.98);
+}
+
+/* Progress bar glow */
+.goals-progress-bar {
+  box-shadow: 0 0 15px rgba(78, 222, 163, 0.5);
+}

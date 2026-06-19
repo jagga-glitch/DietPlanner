@@ -238,7 +238,192 @@ function LoginPage({ onLogin }) {
   );
 }
 
-// ─── Onboarding Page — Physical Vitals ───────────────────────────────────────
+// ─── Goals Page — Life & Goals (Step 2 of 3) ─────────────────────────────────
+function GoalsPage({ onContinue, onBack }) {
+  const [selectedGoal, setSelectedGoal] = useState("Muscle Gain");
+  const [selectedActivity, setSelectedActivity] = useState("Moderate");
+  const [dietary, setDietary] = useState("");
+
+  // Entrance animation on mount
+  useEffect(() => {
+    const sections = document.querySelectorAll(".goals-section");
+    sections.forEach((s, i) => {
+      s.style.opacity = "0";
+      s.style.transform = "translateY(20px)";
+      setTimeout(() => {
+        s.style.transition = "all 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+        s.style.opacity = "1";
+        s.style.transform = "translateY(0)";
+      }, 120 * (i + 1));
+    });
+  }, []);
+
+  const goals = [
+    { value: "Lose Weight",   icon: "monitor_weight", label: "Weight Loss",       desc: "Metabolic optimization for body fat reduction." },
+    { value: "Muscle Gain",   icon: "fitness_center",  label: "Muscle Gain",       desc: "Hypertrophy-focused nutrient partitioning." },
+    { value: "Peak Performance", icon: "bolt",         label: "Peak Performance",  desc: "Cognitive and physical endurance scaling." },
+  ];
+
+  const activities = [
+    { value: "Sedentary", level: "Level 1", desc: "Desk job, minimal exercise." },
+    { value: "Moderate",  level: "Level 2", desc: "Active 3-4 days per week." },
+    { value: "High",      level: "Level 3", desc: "Intense training 5-6 days." },
+    { value: "Athlete",   level: "Level 4", desc: "Professional grade volume." },
+  ];
+
+  return (
+    <div className="bg-background text-on-surface min-h-screen flex flex-col">
+
+      {/* ── Top Nav ── */}
+      <nav className="fixed top-0 w-full z-50 bg-[rgba(14,21,17,0.7)] backdrop-blur-xl border-b border-outline-variant/30 flex justify-between items-center px-5 md:px-16 h-20">
+        <div className="text-[28px] font-extrabold tracking-tighter text-primary">NutriAI</div>
+        <div className="flex items-center gap-6">
+          <span className="hidden md:inline text-[12px] font-semibold tracking-widest uppercase text-on-surface-variant">Step 2 of 3</span>
+          <div className="flex items-center gap-4">
+            <span className="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-colors">notifications</span>
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-primary/30">
+              <img
+                className="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLG0sXRjRqeKPQwMdEaWmNvj1zhdYA3v0PK9DcsTsO5wvOny-D6S7cASWkRnAoUcNNQMWKyJR4H8MPw4vlo9utiWFPVwxgWZv9Kt1P88YaOknZnQvtVxn0YgeTGX509AZHr39OYXZ1PWqVuglG5SnlvTZX9j9davP45PIdiZI_frNK41PzbGG52k8Zr-YU_emSplErDEODuOpDYR2qz1fruJnkd2wsRkJmV8dsF6J96yF3cBMEWqvXw67c6Fbra1hrh0ReyG4sGtvW"
+                alt="Profile avatar"
+              />
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* ── Main ── */}
+      <main className="flex-grow flex flex-col items-center pt-32 pb-16 px-5 md:px-16 max-w-[1200px] mx-auto w-full">
+
+        {/* Progress Header */}
+        <div className="w-full max-w-3xl mb-12">
+          <div className="flex justify-between items-end mb-4">
+            <div>
+              <h1 className="text-[48px] font-extrabold tracking-tighter text-primary mb-2 leading-none">Life &amp; Goals</h1>
+              <p className="text-on-surface-variant max-w-md">Fine-tune your clinical bio-profile. Your journey is uniquely yours.</p>
+            </div>
+            <div className="text-right">
+              <span className="text-[12px] font-semibold tracking-widest uppercase text-primary block mb-1">COMPLETION</span>
+              <span className="text-2xl font-bold">80%</span>
+            </div>
+          </div>
+          <div className="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+            <div className="h-full bg-primary goals-progress-bar transition-all duration-1000" style={{ width: "80%" }} />
+          </div>
+        </div>
+
+        <div className="w-full max-w-4xl flex flex-col gap-12">
+
+          {/* ── Primary Objective ── */}
+          <section className="goals-section">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="material-symbols-outlined text-primary">target</span>
+              <h2 className="text-2xl font-bold">Primary Objective</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {goals.map((g) => (
+                <button
+                  key={g.value}
+                  type="button"
+                  onClick={() => setSelectedGoal(g.value)}
+                  className={`goals-card p-6 rounded-xl flex flex-col items-center text-center group ${selectedGoal === g.value ? "goals-card-selected" : ""}`}
+                >
+                  <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                    <span className="material-symbols-outlined text-primary text-3xl">{g.icon}</span>
+                  </div>
+                  <h3 className="text-lg font-bold mb-2">{g.label}</h3>
+                  <p className="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant leading-tight">{g.desc}</p>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* ── Activity Level ── */}
+          <section className="goals-section">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="material-symbols-outlined text-primary">directions_run</span>
+              <h2 className="text-2xl font-bold">Activity Level</h2>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {activities.map((a) => (
+                <button
+                  key={a.value}
+                  type="button"
+                  onClick={() => setSelectedActivity(a.value)}
+                  className={`goals-card p-6 rounded-xl text-left flex flex-col gap-3 ${selectedActivity === a.value ? "goals-card-selected" : ""}`}
+                >
+                  <span className="text-[12px] font-semibold tracking-widest uppercase text-on-surface-variant">{a.level}</span>
+                  <h3 className="text-lg font-bold">{a.value}</h3>
+                  <p className="text-[11px] leading-tight text-outline">{a.desc}</p>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* ── Bio-Restrictions ── */}
+          <section className="goals-section max-w-2xl">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="material-symbols-outlined text-primary">no_food</span>
+              <h2 className="text-2xl font-bold">Bio-Restrictions</h2>
+            </div>
+            <div className="space-y-4">
+              <label htmlFor="dietary" className="text-[12px] font-semibold tracking-widest uppercase text-on-surface-variant">
+                DIETARY PREFERENCES / ALLERGIES
+              </label>
+              <div className="relative group">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline group-focus-within:text-primary transition-colors">restaurant</span>
+                <input
+                  id="dietary"
+                  type="text"
+                  value={dietary}
+                  onChange={(e) => setDietary(e.target.value)}
+                  className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-xl py-4 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all text-on-surface placeholder:text-outline/50"
+                  placeholder="e.g. Vegan, No Shellfish, Nut Allergy..."
+                />
+              </div>
+              <p className="text-[10px] font-bold tracking-widest uppercase text-outline">
+                NutriAI's clinical engine will exclude these markers from all recipe generations.
+              </p>
+            </div>
+          </section>
+
+          {/* ── Actions ── */}
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-12 border-t border-outline-variant/10">
+            <button
+              onClick={onBack}
+              className="px-8 py-4 text-[12px] font-semibold tracking-widest uppercase text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2 group"
+            >
+              <span className="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+              Previous Step
+            </button>
+            <button
+              onClick={() => onContinue({ goal: selectedGoal, activityLevel: selectedActivity, dietPreference: dietary || selectedGoal })}
+              className="flex-1 md:flex-none px-12 py-4 bg-gradient-to-r from-primary to-secondary text-on-primary text-base font-bold rounded-full shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
+            >
+              Complete Profile
+              <span className="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </main>
+
+      {/* ── Footer ── */}
+      <footer className="w-full py-8 mt-32 bg-surface-container-lowest border-t border-outline-variant/10">
+        <div className="flex flex-col md:flex-row justify-between items-center px-5 md:px-16 max-w-[1200px] mx-auto w-full gap-4">
+          <div className="text-[12px] font-semibold tracking-widest uppercase text-on-surface">NUTRIAI CLINICAL SYSTEMS</div>
+          <div className="flex gap-6 text-[10px] font-bold tracking-widest uppercase text-outline">
+            <span className="hover:text-surface-tint transition-colors cursor-pointer">System Status: Operational</span>
+            <span className="hover:text-surface-tint transition-colors cursor-pointer">Privacy Policy</span>
+            <span className="hover:text-surface-tint transition-colors cursor-pointer">Terms of Service</span>
+          </div>
+          <div className="text-[10px] font-bold tracking-widest uppercase text-outline">© 2024 NutriAI Clinical Systems. All rights reserved.</div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+// ─── OnboardingPage — Physical Vitals (Step 1 of 3) ──────────────────────────
 function OnboardingPage({ onContinue }) {
   const [gender, setGender] = useState("male");
   const [age, setAge] = useState(28);
@@ -277,7 +462,7 @@ function OnboardingPage({ onContinue }) {
 
             {/* Connector 1 */}
             <div className="flex-grow mx-4 h-[2px] bg-outline-variant/30 relative">
-              <div className="absolute inset-0 w-1/2 bg-primary" />
+              <div className="absolute inset-0 w-0 bg-primary" />
             </div>
 
             {/* Step 2 — inactive */}
@@ -1068,16 +1253,29 @@ export default function App() {
     return <LoginPage onLogin={() => setPage("onboarding")} />;
   }
 
-  // ── Page: Onboarding ─────────────────────────────────────────────────────────
+  // ── Page: Onboarding (Step 1 — Physical Vitals) ───────────────────────────
   if (page === "onboarding") {
     return (
       <OnboardingPage
         onContinue={(vitals) => {
-          // Pre-populate the main app form with slider values
           setGender(vitals.gender === "male" ? "Male" : "Female");
           setAge(vitals.age);
           setHeight(vitals.height);
           setWeight(vitals.weight);
+          setPage("goals");
+        }}
+      />
+    );
+  }
+
+  // ── Page: Goals (Step 2 — Life & Goals) ──────────────────────────────────
+  if (page === "goals") {
+    return (
+      <GoalsPage
+        onBack={() => setPage("onboarding")}
+        onContinue={(prefs) => {
+          setGoal(prefs.goal);
+          setDietPreference(prefs.dietPreference);
           setPage("app");
         }}
       />
