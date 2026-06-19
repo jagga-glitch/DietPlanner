@@ -238,6 +238,327 @@ function LoginPage({ onLogin }) {
   );
 }
 
+// ─── Dashboard Page ───────────────────────────────────────────────────────────
+function DashboardPage({ userProfile, onNavigatePlanner, onSignOut }) {
+  const { gender, age, weight, height, goal, dietPreference } = userProfile;
+
+  const meals = [
+    {
+      tag: "Breakfast", kcal: "420 Kcal",
+      name: "Avocado Bio-Bowl", desc: "High Omega-3, Low Glycemic",
+      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBEZmD4eh1x565x_X7WFJn8IQu8077Ceoi8ckndHAaEdCn43aVB1Hwpuh_DERGsC68d4AlOAQBLq3GTgDdEoQ1I-cTqvHvODrRIodC8i9hf8cNciihY08m8vHzROQi7O8bKbqi320ogB71R7lGKEQjpAKxNfI4pAoPwiC1B2RZjP_OJ1WARzZ4SiHoZAIJ9aLVs4GjE2aFIX7uS8_LOpFO2BFhXV7J8uIY6KuSmsKmKrgxo-ED30e88sQLi9nxHpm_86rNIxHnw8Tp6",
+    },
+    {
+      tag: "Lunch", kcal: "680 Kcal",
+      name: "Salmon Prot-Synth", desc: "Muscle Synthesis Optimized",
+      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAc-ysoO2Dyag-RC6BQMNviLEEOnbRfPYXK7gVu4nNwklGHQkALeS9AJj_gRQk9_XpqXxfWz6hIpid9tlecY_Qk2OSDBXgzIry9HRwtaQm0IjxlRWxsbkXnkjpPpT5SlzsrcuCO2YFAcsF0clp6pSSCuXkeRkI-YH3VGXfn9i_I4_cu3NOLJAgdjHp04ogBemzhgsJ_0IphzpzQy2zqgoCBC2mpEdAUc-C3tLyUyk66P_TEgFbQBW8lzAiihSrGPWQKFEyS5udxm8z8",
+    },
+    {
+      tag: "Dinner", kcal: "740 Kcal",
+      name: "Steak Glyco-Load", desc: "Slow Release Energy",
+      img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDe-WZoEf0wnV8P6J1787fRWIPitvC2RXtxaJz8FY3k9RI_hyXYdyv8U1OQL6o2FIIehDdfq7qQOpggF3MZk-VybAQD2iycNWrTl-LGOgpxH3F6DwasArJ2ccpBNu6qDjvn6HFJlHcPJGi_b9H0pAA8-9A-CsgYSDG7_SbWksqcTr7kgjHwx01P4LE74QHAh_xTIavyqIBLO3urBQkau_pby0ZY-epHb0Er5MWKvBP8O9DG-cMc2SniGhHVyj9yY4X3hfumD_XQz0To",
+    },
+  ];
+
+  const chartBars = [80,78,75,72,73,70,68,65,67,62,60,58,55,52,50];
+
+  return (
+    <div className="bg-background text-on-surface custom-scrollbar min-h-screen">
+
+      {/* ── Top Nav ── */}
+      <nav className="fixed top-0 w-full z-50 bg-[rgba(14,21,17,0.7)] backdrop-blur-xl border-b border-outline-variant/30 flex justify-between items-center px-5 md:px-16 h-20">
+        <div className="text-[48px] font-extrabold tracking-tighter text-primary leading-none">NutriAI</div>
+        <div className="hidden md:flex gap-8 items-center">
+          <button onClick={onNavigatePlanner} className="text-base text-on-surface-variant hover:text-primary transition-colors">Dashboard</button>
+          <button onClick={onNavigatePlanner} className="text-base text-primary font-bold border-b-2 border-primary pb-1">AI Planner</button>
+          <a className="text-base text-on-surface-variant hover:text-primary transition-colors" href="#">Supplements</a>
+          <a className="text-base text-on-surface-variant hover:text-primary transition-colors" href="#">Clinical Data</a>
+        </div>
+        <div className="flex items-center gap-4">
+          <button className="p-2 rounded-full hover:bg-surface-variant transition-colors text-on-surface-variant">
+            <span className="material-symbols-outlined">notifications</span>
+          </button>
+          <div className="w-10 h-10 rounded-full overflow-hidden border border-primary/30">
+            <img
+              className="w-full h-full object-cover"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdGfeG8efb_cg-EmUrbHxnLhBrIvQcAHuXmiAKHmD2oC1P9jSH-veZmEMn8wURyZ1lyzD_9kO5pw7FU-ef7WRf5jTPmYqM90kFPLrYVXyaNBYZMQoadxI3rv8qaRFJgD0CXC4vyqm9M33_uSdqgepMFlWXvPn5QK5qTuwz2k1OCc35HG8Ii-f9VuUWyWMbjeCFJGEpgksacbD68MGs-AVtWLM-DSml2ZQD-0T_Cs2JxWNDYBPB9Gs5iOTkw9HN2PYc2uMhhBnIXL3J"
+              alt="User profile"
+            />
+          </div>
+        </div>
+      </nav>
+
+      {/* ── Sidebar (Desktop) ── */}
+      <aside className="fixed left-0 top-0 h-full w-64 z-40 bg-surface-container-low backdrop-blur-2xl border-r border-outline-variant/20 shadow-2xl hidden md:flex flex-col py-8 gap-4 pt-24">
+        <div className="px-6 mb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-8 bg-primary rounded-full" />
+            <div>
+              <div className="text-2xl font-bold text-surface-tint">Clinical Data</div>
+              <div className="text-[12px] font-semibold tracking-widest uppercase text-on-surface-variant opacity-60">Vitals Synchronized</div>
+            </div>
+          </div>
+        </div>
+
+        <nav className="flex-1 px-4 space-y-2">
+          {[
+            { icon: "monitor_heart", label: "Biometrics", active: true },
+            { icon: "restaurant",    label: "Nutrition",  active: false },
+            { icon: "dns",           label: "Genomics",   active: false },
+            { icon: "settings",      label: "Settings",   active: false },
+          ].map((item) => (
+            <button
+              key={item.label}
+              className={`w-full flex items-center gap-4 p-3 rounded-lg transition-all ${
+                item.active
+                  ? "text-primary bg-primary/10 border-r-4 border-primary"
+                  : "text-on-surface-variant hover:bg-surface-variant/50 hover:text-on-surface"
+              }`}
+            >
+              <span className="material-symbols-outlined">{item.icon}</span>
+              <span className="text-[12px] font-semibold tracking-widest uppercase">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        <div className="px-6 pt-4 border-t border-outline-variant/10">
+          <button
+            onClick={onNavigatePlanner}
+            className="w-full py-3 bg-primary text-on-primary font-bold rounded-lg shadow-primary/20 hover:scale-105 transition-transform flex items-center justify-center gap-2"
+          >
+            <span className="material-symbols-outlined text-[18px]">bolt</span>
+            Run AI Planner
+          </button>
+        </div>
+
+        <div className="px-4 mt-auto space-y-1">
+          <div className="flex items-center gap-4 p-3 text-on-surface-variant hover:text-on-surface cursor-pointer text-[12px] font-semibold tracking-widest uppercase">
+            <span className="material-symbols-outlined">help_outline</span>Support
+          </div>
+          <button
+            onClick={onSignOut}
+            className="w-full flex items-center gap-4 p-3 text-on-surface-variant hover:text-primary transition-colors text-[12px] font-semibold tracking-widest uppercase"
+          >
+            <span className="material-symbols-outlined">logout</span>Sign Out
+          </button>
+        </div>
+      </aside>
+
+      {/* ── Main Content ── */}
+      <main className="md:ml-64 pt-28 px-5 md:px-16 pb-24 max-w-[1400px] mx-auto">
+
+        {/* Header */}
+        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <h1 className="text-[48px] font-extrabold tracking-tighter mb-2 leading-tight">
+              Welcome back, <span className="text-primary">{gender || "Clinician"}.</span>
+            </h1>
+            <p className="text-lg text-on-surface-variant max-w-xl">
+              Your biometric sync is complete. Goal: <span className="text-primary font-semibold">{goal || "Optimize"}</span> · {age ? `Age ${age}` : ""} {weight ? `· ${weight}kg` : ""} {height ? `· ${height}cm` : ""}
+            </p>
+          </div>
+          <div className="flex gap-4">
+            <button className="flex items-center gap-2 px-6 py-3 dash-glass-card rounded-xl text-[12px] font-semibold tracking-widest uppercase hover:bg-surface-container transition-all">
+              <span className="material-symbols-outlined">add_circle</span>Log Intake
+            </button>
+            <button
+              onClick={onNavigatePlanner}
+              className="flex items-center gap-2 px-6 py-3 bg-primary text-on-primary font-bold rounded-xl shadow-lg shadow-primary/30 hover:scale-105 transition-transform"
+            >
+              <span className="material-symbols-outlined">biotech</span>Run Analysis
+            </button>
+          </div>
+        </header>
+
+        {/* ── Bento Grid ── */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+
+          {/* Nutrition Ring */}
+          <div className="md:col-span-8 dash-glass-card rounded-2xl p-6 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group">
+            <div className="absolute -top-24 -left-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl dash-pulse" />
+            <div className="relative w-48 h-48 flex-shrink-0 flex items-center justify-center">
+              <svg className="w-full h-full" viewBox="0 0 192 192">
+                <circle className="text-surface-container-highest" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" strokeWidth="12"/>
+                <circle
+                  className="text-primary dash-ring"
+                  cx="96" cy="96" fill="transparent" r="80"
+                  stroke="currentColor" strokeWidth="12"
+                  strokeDasharray="502" strokeDashoffset="125"
+                  style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%" }}
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span className="text-3xl font-extrabold">1,842</span>
+                <span className="text-[10px] font-bold tracking-widest uppercase text-on-surface-variant">Kcal Left</span>
+              </div>
+            </div>
+            <div className="flex-1 grid grid-cols-3 gap-6 w-full">
+              {[
+                { label: "Protein", val: "142/190g", pct: "75%", color: "bg-primary-container" },
+                { label: "Carbs",   val: "98/220g",  pct: "45%", color: "bg-secondary" },
+                { label: "Fats",    val: "42/70g",   pct: "60%", color: "bg-tertiary" },
+              ].map((m) => (
+                <div key={m.label} className="flex flex-col gap-2">
+                  <span className="text-[12px] font-semibold tracking-widest uppercase text-on-surface-variant">{m.label}</span>
+                  <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                    <div className={`h-full ${m.color} rounded-full`} style={{ width: m.pct }} />
+                  </div>
+                  <span className="text-sm font-bold">{m.val}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Hydration Widget */}
+          <div className="md:col-span-4 dash-glass-card rounded-2xl p-6 flex flex-col justify-between dash-neon-border">
+            <div className="flex justify-between items-start">
+              <div>
+                <span className="text-[12px] font-semibold tracking-widest uppercase text-primary">Hydration</span>
+                <h3 className="text-2xl font-bold mt-1">2.4 <span className="text-lg font-normal opacity-50">L</span></h3>
+              </div>
+              <span className="material-symbols-outlined text-primary text-4xl">water_drop</span>
+            </div>
+            <div className="flex gap-2 mt-8">
+              {[true, true, true, "pulse", false].map((active, i) => (
+                <div
+                  key={i}
+                  className={`h-12 flex-1 rounded-lg border flex items-center justify-center ${
+                    active === "pulse"
+                      ? "bg-primary/40 border-primary/30 animate-pulse"
+                      : active
+                      ? "bg-primary/20 border-primary/10"
+                      : "bg-surface-container-highest border-outline-variant/10"
+                  }`}
+                />
+              ))}
+            </div>
+            <button className="mt-6 w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary font-bold rounded-lg transition-colors border border-primary/20">
+              + 250ml
+            </button>
+          </div>
+
+          {/* Weight Chart */}
+          <div className="md:col-span-12 dash-glass-card rounded-2xl p-6">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h3 className="text-2xl font-bold">Weight Momentum</h3>
+                <p className="text-on-surface-variant text-sm">Last 30 Days Clinical Trend</p>
+              </div>
+              <div className="flex gap-2">
+                <div className="px-3 py-1 rounded bg-primary/10 text-primary text-[10px] font-bold tracking-widest uppercase">{weight ? `${weight} kg Current` : "76.2 kg Current"}</div>
+                <div className="px-3 py-1 rounded bg-on-surface-variant/10 text-on-surface-variant text-[10px] font-bold tracking-widest uppercase">-1.4 kg This Month</div>
+              </div>
+            </div>
+            <div className="w-full h-48 flex items-end gap-1 px-2">
+              {chartBars.map((h, i) => (
+                <div
+                  key={i}
+                  className="flex-1 rounded-t-sm hover:bg-primary/30 transition-all cursor-pointer"
+                  style={{
+                    height: `${h}%`,
+                    background: `rgba(78,222,163,${0.1 + (i / chartBars.length) * 0.8})`,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Today's Meal Plan */}
+          <div className="md:col-span-12 mt-4">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">restaurant_menu</span>
+                Today's Meal Plan
+              </h2>
+              <button onClick={onNavigatePlanner} className="text-[12px] font-semibold tracking-widest uppercase text-primary hover:underline">
+                Full Protocol
+              </button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {meals.map((meal) => (
+                <div key={meal.tag} className="dash-glass-card rounded-2xl overflow-hidden flex flex-col dash-meal-card cursor-pointer group">
+                  <div className="h-40 overflow-hidden relative">
+                    <img className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src={meal.img} alt={meal.name} />
+                    <div className="absolute top-4 left-4 px-3 py-1 bg-[rgba(14,21,17,0.7)] backdrop-blur-md rounded-lg text-[10px] font-bold tracking-widest uppercase">{meal.tag}</div>
+                  </div>
+                  <div className="p-6">
+                    <h4 className="text-lg font-bold mb-1">{meal.name}</h4>
+                    <p className="text-sm text-on-surface-variant mb-4">{meal.desc}</p>
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-primary">{meal.kcal}</span>
+                      <button className="p-2 rounded-full bg-surface-container hover:bg-primary hover:text-on-primary transition-all">
+                        <span className="material-symbols-outlined">add</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* AI Insight Card */}
+          <div className="md:col-span-12 dash-glass-card rounded-2xl p-6 border border-tertiary/30 bg-tertiary-container/5 mt-8 flex flex-col md:flex-row gap-8 items-center">
+            <div className="w-16 h-16 rounded-2xl bg-tertiary/20 flex items-center justify-center text-tertiary flex-shrink-0">
+              <span className="material-symbols-outlined text-4xl">auto_awesome</span>
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold text-tertiary">AI Biometric Insight</h3>
+              <p className="text-on-surface-variant mt-2">
+                Based on your profile ({dietPreference || "your dietary preference"}), your caffeine threshold should not exceed 150mg today. We've adjusted your lunch protocol to include more L-Theanine rich ingredients.
+              </p>
+            </div>
+            <button
+              onClick={onNavigatePlanner}
+              className="md:ml-auto px-6 py-3 border border-tertiary text-tertiary rounded-xl hover:bg-tertiary hover:text-on-tertiary transition-all whitespace-nowrap"
+            >
+              Update Protocol
+            </button>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <footer className="mt-32 pt-8 border-t border-outline-variant/10 flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex flex-col gap-2">
+            <div className="text-[12px] font-semibold tracking-widest uppercase text-on-surface">NutriAI Clinical Systems</div>
+            <p className="text-[10px] font-bold tracking-widest uppercase text-outline">© 2024 NutriAI Clinical Systems. All rights reserved.</p>
+          </div>
+          <div className="flex gap-8">
+            <a className="text-[10px] font-bold tracking-widest uppercase text-outline hover:text-surface-tint transition-colors" href="#">System Status: Operational</a>
+            <a className="text-[10px] font-bold tracking-widest uppercase text-outline hover:text-surface-tint transition-colors" href="#">Privacy Policy</a>
+            <a className="text-[10px] font-bold tracking-widest uppercase text-outline hover:text-surface-tint transition-colors" href="#">Terms of Service</a>
+          </div>
+        </footer>
+      </main>
+
+      {/* ── Mobile Bottom Nav ── */}
+      <div className="md:hidden fixed bottom-0 left-0 w-full bg-[rgba(14,21,17,0.7)] backdrop-blur-2xl border-t border-outline-variant/20 flex justify-around items-center h-20 px-6 z-50">
+        <button className="flex flex-col items-center gap-1 text-primary">
+          <span className="material-symbols-outlined">dashboard</span>
+          <span className="text-[10px] font-bold uppercase">Dash</span>
+        </button>
+        <button onClick={onNavigatePlanner} className="flex flex-col items-center gap-1 text-on-surface-variant">
+          <span className="material-symbols-outlined">restaurant</span>
+          <span className="text-[10px] uppercase">Plan</span>
+        </button>
+        <button
+          onClick={onNavigatePlanner}
+          className="w-14 h-14 bg-primary rounded-full -mt-10 flex items-center justify-center text-on-primary shadow-lg shadow-primary/40 border-4 border-background"
+        >
+          <span className="material-symbols-outlined text-3xl">add</span>
+        </button>
+        <button className="flex flex-col items-center gap-1 text-on-surface-variant">
+          <span className="material-symbols-outlined">analytics</span>
+          <span className="text-[10px] uppercase">Data</span>
+        </button>
+        <button onClick={onSignOut} className="flex flex-col items-center gap-1 text-on-surface-variant">
+          <span className="material-symbols-outlined">person</span>
+          <span className="text-[10px] uppercase">Profile</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Goals Page — Life & Goals (Step 2 of 3) ─────────────────────────────────
 function GoalsPage({ onContinue, onBack }) {
   const [selectedGoal, setSelectedGoal] = useState("Muscle Gain");
@@ -1226,7 +1547,7 @@ function MobileNav() {
 
 // ─── Root App Component ──────────────────────────────────────────────────────
 export default function App() {
-  // Page routing state: "login" | "onboarding" | "app"
+  // Page routing state: "login" | "onboarding" | "goals" | "dashboard" | "app"
   const [page, setPage] = useState("login");
 
   // Form State
@@ -1276,7 +1597,23 @@ export default function App() {
         onContinue={(prefs) => {
           setGoal(prefs.goal);
           setDietPreference(prefs.dietPreference);
-          setPage("app");
+          setPage("dashboard");
+        }}
+      />
+    );
+  }
+
+  // ── Page: Dashboard ───────────────────────────────────────────────────────
+  if (page === "dashboard") {
+    return (
+      <DashboardPage
+        userProfile={{ gender, age, weight, height, goal, dietPreference }}
+        onNavigatePlanner={() => setPage("app")}
+        onSignOut={() => {
+          setPage("login");
+          setAge(""); setGender(""); setWeight(""); setHeight("");
+          setGoal(""); setDietPreference("");
+          setDietPlan(""); setView("intake"); setErrors({});
         }}
       />
     );
