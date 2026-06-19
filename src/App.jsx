@@ -3,11 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import Groq from "groq-sdk";
 import "./app.css";
 
-const groq = new Groq({
-  apiKey: import.meta.env.VITE_GROQ_API_KEY,
-  dangerouslyAllowBrowser: true,
-});
-
 // ─── Login Page ──────────────────────────────────────────────────────────────
 function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("");
@@ -1654,9 +1649,20 @@ export default function App() {
     return Object.keys(newErrors).length === 0;
   }
 
-  // Generate Diet Plan — original Groq logic preserved
+  // Generate Diet Plan — Groq client created at call time so env var is always fresh
   async function generateDietPlan() {
     if (!validateForm()) return;
+
+    const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+    if (!apiKey) {
+      setDietPlan(
+        "⚠️ Missing API Key\n\nVITE_GROQ_API_KEY is not set.\n\nIf deployed on Vercel:\n1. Project → Settings → Environment Variables\n2. Add VITE_GROQ_API_KEY = your Groq key\n3. Redeploy"
+      );
+      setView("results");
+      return;
+    }
+
+    const groq = new Groq({ apiKey, dangerouslyAllowBrowser: true });
 
     setLoading(true);
     setDietPlan("");
@@ -1708,8 +1714,10 @@ Activity Level: Moderately Active
         chatCompletion.choices[0]?.message?.content || "No response generated."
       );
     } catch (error) {
-      console.error(error);
-      setDietPlan("Something went wrong while generating the diet plan.");
+      console.error("Groq error:", error);
+      setDietPlan(
+        `❌ Generation failed.\n\nError: ${error?.message || String(error)}\n\nCheck that VITE_GROQ_API_KEY is valid and the Groq API is reachable.`
+      );
     }
 
     setLoading(false);
